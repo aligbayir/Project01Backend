@@ -6,6 +6,7 @@ using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Project01.Controllers
 {
@@ -66,22 +67,24 @@ namespace Project01.Controllers
 
         [HttpGet]
         [Route("GetInvoicesByCustomerId")]
-        public IQueryable GetInvoicesByCustomerId()
+        public IActionResult GetInvoicesByCustomerId(int id)
         {
             ProjectDbContext dbcontext = new ProjectDbContext();
 
 
-            var result = from t1 in dbcontext.Invoices
-                         join t2 in dbcontext.Customers on t1.CustomerId equals t2.customerId
-                         select new
-                         {
-                             customerId = t1.CustomerId,
-                             invoiceId = t1.InvoiceId,
-                             invoiceNumber = t1.InvoiceNumber,
-                             invoiceAmount = t1.InvoiceAmount,
-                             customerName = t2.customerName,
-                         };
-            return result;
+            //var result = from t1 in dbcontext.Invoices
+            //             join t2 in dbcontext.Customers on t1.CustomerId equals t2.customerId
+            //             select new
+            //             {
+            //                 customerId = t1.CustomerId,
+            //                 invoiceId = t1.InvoiceId,
+            //                 invoiceNumber = t1.InvoiceNumber,
+            //                 invoiceAmount = t1.InvoiceAmount,
+            //                 customerName = t2.customerName,
+            //             };
+
+            var result = dbcontext.Invoices.Include(x => x.Customer).Where(x => x.CustomerId == id);
+            return Ok(result.ToList());
         }
     }
 }

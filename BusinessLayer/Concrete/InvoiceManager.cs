@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,9 +34,9 @@ namespace BusinessLayer.Concrete
             return "Fatura Başarıyla eklendi";
         }
 
-        public List<InvoiceViewModel> GetAll()
+        public List<InvoiceViewModel> GetAll(Expression<Func<Invoice, bool>> filter = null)
         {
-            return _invoiceDal.GetAll().Select(x => _mapper.Map<InvoiceViewModel>(x)).ToList();
+            return _invoiceDal.GetAll(filter).Select(x => _mapper.Map<InvoiceViewModel>(x)).ToList();
         }
 
         public Invoice GetById(int id)
