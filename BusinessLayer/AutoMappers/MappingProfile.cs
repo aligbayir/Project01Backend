@@ -17,6 +17,9 @@ namespace BusinessLayer.AutoMappers
             CreateMap<User,UserLoginViewModel>();
             CreateMap<Invoice,InvoiceViewModel>();
             CreateMap<InvoiceViewModel, Invoice>();
+            //CreateMap<Invoice,InvoiceViewModelForCustomerName>();
+            //CreateMap<InvoiceViewModelForCustomerName, Invoice>();
+
         }
     }
 }

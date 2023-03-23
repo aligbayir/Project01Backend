@@ -11,5 +11,6 @@ namespace DataAccessLayer.Concrete.EntityFramework
 {
     public class EfInvoiceDal : EfEntityRepositoryBase<Invoice, ProjectDbContext>, IInvoiceDal
     {
+        
     }
 }

@@ -12,8 +12,8 @@ namespace BusinessLayer.Abstract
     {
         List<InvoiceViewModel> GetAll();
         Invoice GetById(int id);
+        //List<InvoiceViewModel> GtInvoiceByCustomerId(int id);
         string Add(InvoiceViewModel invoice);
         string Update(InvoiceViewModel invoice);
-        //string Delete(InvoiceViewModel invoice);
     }
 }

@@ -53,7 +53,7 @@ namespace Project01.Controllers
             return Ok(res);
         }
         [HttpGet]
-        [Route("GetById/{id}")]
+        [Route("{id}")]
         public Customer GetByID(int id)
         {
             return _customerService.GetById(id);
