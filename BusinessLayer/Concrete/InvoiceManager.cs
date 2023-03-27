@@ -43,22 +43,6 @@ namespace BusinessLayer.Concrete
         {
             return _invoiceDal.Get(x => x.InvoiceId == id);
         }
-
-        //public List<Invoice> GtInvoiceByCustomerId(int id)
-        //{
-        //    //var invoice = _invoiceDal.GetAll(x => x.CustomerId == id).Select(y=> _mapper.Map<InvoiceViewModel>(y)).ToList();
-        //    //return invoice;
-
-        //    var result = from t1 in _invoiceDal.GetAll()
-        //                 join t2 in _customerDal.GetAll() on t1.CustomerId equals t2.customerId
-        //                 select new
-        //                 {
-        //                     customerId = t1.CustomerId,
-        //                     customerName = t2.customerName
-        //                 };
-        //    return result;
-        //}
-
         public string Update(InvoiceViewModel invoice)
         {
             var existingInvoice = _invoiceDal.Get(x => x.InvoiceId == invoice.InvoiceId);

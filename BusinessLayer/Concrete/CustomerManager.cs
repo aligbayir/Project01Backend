@@ -1,5 +1,10 @@
-﻿using BusinessLayer.Abstract;
+﻿using AutoMapper;
+using BusinessLayer.Abstract;
+using BusinessLayer.AutoMappers.CustomerViewModels;
+using BusinessLayer.AutoMappers.InvoiceViewModels;
+using BusinessLayer.Concrete.Validators.CustomerValidators;
 using DataAccessLayer.Abstract;
+using DataAccessLayer.Concrete.EntityFramework;
 using EntityLayer.Concrete;
 using System;
 using System.Collections.Generic;
@@ -12,15 +17,18 @@ namespace BusinessLayer.Concrete
     public class CustomerManager: ICustomerService
     {
         private readonly ICustomerDal _customerDal;
+        private readonly IMapper _mapper;
 
-        public CustomerManager(ICustomerDal customerDal)
+        public CustomerManager(ICustomerDal customerDal, IMapper mapper)
         {
             _customerDal = customerDal;
+            _mapper = mapper;
         }
 
-        public string Add(Customer customer)
+        public string Add(CustomerViewModel customer)
         {
-            _customerDal.Add(customer);
+            var invc = _mapper.Map<Customer>(customer);
+            _customerDal.Add(invc);
             return "Customer Başarıyla Eklendi";
             
         }
@@ -31,9 +39,9 @@ namespace BusinessLayer.Concrete
             return "Başarıyla Silme İşlemi Gerçekleştirildi";
         }
 
-        public List<Customer> GetAll()
+        public List<CustomerViewModel> GetAll()
         {
-            return _customerDal.GetAll();
+            return _customerDal.GetAll().Select(x=> _mapper.Map<CustomerViewModel>(x)).ToList();
         }
 
         public Customer GetById(int id)
@@ -41,7 +49,7 @@ namespace BusinessLayer.Concrete
             return _customerDal.Get(x => x.customerId == id);
         }
 
-        public string Update(Customer customer)
+        public string Update(CustomerViewModel customer)
         {
             var existingCustomer = _customerDal.Get(x=>x.customerId==customer.customerId);
             if (existingCustomer != null) 

@@ -1,8 +1,11 @@
 ﻿using BusinessLayer.Abstract;
+using BusinessLayer.AutoMappers.CustomerViewModels;
+using BusinessLayer.Concrete.Validators.CustomerValidators;
 using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace Project01.Controllers
 {
@@ -30,7 +33,7 @@ namespace Project01.Controllers
             return Ok(customerList);
         }
         [HttpPost]
-        public IActionResult Add(Customer customer)
+        public IActionResult Add(CustomerViewModel customer)
         {
             var cst = _customerService.Add(customer);
             var response = new
@@ -42,7 +45,7 @@ namespace Project01.Controllers
         }
         [HttpPut]
         [Route("{id}")]
-        public IActionResult Update([FromBody] Customer updatedCustomer)
+        public IActionResult Update([FromBody] CustomerViewModel updatedCustomer)
         {
             var upt = _customerService.Update(updatedCustomer);
             var res = new

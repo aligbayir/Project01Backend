@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using BusinessLayer.Abstract;
 using BusinessLayer.AutoMappers.InvoiceViewModels;
+using BusinessLayer.Concrete.Validators.CustomerValidators;
+using BusinessLayer.Concrete.Validators.InvoiceValidators;
 using DataAccessLayer.Concrete;
 using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Authorization;
@@ -66,25 +68,69 @@ namespace Project01.Controllers
         }
 
         [HttpGet]
-        [Route("GetInvoicesByCustomerId")]
-        public IActionResult GetInvoicesByCustomerId(int id)
+        [Route("GetInvoicesWithCustomer")]
+        public IActionResult GetInvoicesWithCustomer()
         {
             ProjectDbContext dbcontext = new ProjectDbContext();
 
 
-            //var result = from t1 in dbcontext.Invoices
-            //             join t2 in dbcontext.Customers on t1.CustomerId equals t2.customerId
-            //             select new
-            //             {
-            //                 customerId = t1.CustomerId,
-            //                 invoiceId = t1.InvoiceId,
-            //                 invoiceNumber = t1.InvoiceNumber,
-            //                 invoiceAmount = t1.InvoiceAmount,
-            //                 customerName = t2.customerName,
-            //             };
+            var result = from t1 in dbcontext.Invoices
+                         join t2 in dbcontext.Customers on t1.CustomerId equals t2.customerId
+                         select new
+                         {
+                             customerId = t1.CustomerId,
+                             invoiceId = t1.InvoiceId,
+                             invoiceNumber = t1.InvoiceNumber,
+                             invoiceAmount = t1.InvoiceAmount,
+                             customerName = t2.customerName,
+                         };
 
-            var result = dbcontext.Invoices.Include(x => x.Customer).Where(x => x.CustomerId == id);
+            //var result = dbcontext.Invoices.Include(x => x.Customer).Where(x => x.CustomerId == id).Select(x => x.Customer.customerName);
             return Ok(result.ToList());
+        }
+        [HttpGet]
+        [Route("GetInvoiceWithCustomer/{id}")]
+        public IActionResult GetInvoiceWithCustomer(int id)
+        {
+            ProjectDbContext dbcontext = new ProjectDbContext();
+
+
+            var result = from t1 in dbcontext.Invoices
+                         join t2 in dbcontext.Customers on t1.CustomerId equals t2.customerId
+                         select new
+                         {
+                             customerId = t1.CustomerId,
+                             invoiceId = t1.InvoiceId,
+                             invoiceNumber = t1.InvoiceNumber,
+                             invoiceAmount = t1.InvoiceAmount,
+                             customerName = t2.customerName,
+                         };
+            var selected = result.Where(x => x.invoiceId == id).Select(x => new { x.invoiceId,x.invoiceNumber,x.invoiceAmount,x.customerName,x.customerId}).ToList();
+
+            //var result = dbcontext.Invoices.Include(x => x.Customer).Where(x => x.CustomerId == id).Select(x => x.Customer.customerName);
+            return Ok(selected);
+        }
+        [HttpGet]
+        [Route("GetInvoiceByCustomerId/{id}")]
+        public IActionResult GetInvoicesWithCustomer(int id)
+        {
+            ProjectDbContext dbcontext = new ProjectDbContext();
+
+
+            var result = from t1 in dbcontext.Invoices
+                         join t2 in dbcontext.Customers on t1.CustomerId equals t2.customerId
+                         select new
+                         {
+                             customerId = t1.CustomerId,
+                             invoiceId = t1.InvoiceId,
+                             invoiceNumber = t1.InvoiceNumber,
+                             invoiceAmount = t1.InvoiceAmount,
+                             customerName = t2.customerName,
+                         };
+            var selected =result.Where(x => x.customerId == id);
+
+            //var result = dbcontext.Invoices.Include(x => x.Customer).Where(x => x.CustomerId == id).Select(x => x.Customer.customerName);
+            return Ok(selected.ToList());
         }
     }
 }

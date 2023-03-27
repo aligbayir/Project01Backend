@@ -1,4 +1,5 @@
-﻿using EntityLayer.Concrete;
+﻿using BusinessLayer.AutoMappers.CustomerViewModels;
+using EntityLayer.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace BusinessLayer.Abstract
 {
     public interface ICustomerService
     {
-        List<Customer> GetAll();
+        List<CustomerViewModel> GetAll();
         Customer GetById(int id);
-        string Add(Customer customer);
-        string Update(Customer customer);
+        string Add(CustomerViewModel customer);
+        string Update(CustomerViewModel customer);
         string Delete(Customer customer);
     }
 }
