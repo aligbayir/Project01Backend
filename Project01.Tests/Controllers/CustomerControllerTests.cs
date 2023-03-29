@@ -1,0 +1,201 @@
+﻿using BusinessLayer.Abstract;
+using BusinessLayer.AutoMappers.CustomerViewModels;
+using EntityLayer.Concrete;
+using FakeItEasy;
+using Microsoft.AspNetCore.Mvc;
+using Project01.Controllers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Project01.Tests.Controllers
+{
+    public class CustomerControllerTests
+    {
+        private readonly CustomerController _controller;
+        private readonly ICustomerService _customerService;
+
+        public CustomerControllerTests()
+        {
+            _customerService = A.Fake<ICustomerService>();
+            _controller = new CustomerController(_customerService);
+        }
+
+        [Fact]
+        public void Add_ReturnsOkResult()
+        {
+            // Arrange
+            var customerViewModel = new CustomerViewModel
+            {
+                customerId = 1,
+                customerName = "John Doe",
+                customerEmail = "johndoe@example.com",
+                customerPhone = "1234567890",
+                customerIsActive = true,
+                createDateTime = DateTime.Now,
+                updatedDateTime = null
+            };
+
+            A.CallTo(() => _customerService.Add(customerViewModel)).Returns("Customer Başarıyla Eklendi");
+
+            // Act
+            var result = _controller.Add(customerViewModel);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public void GetCustomerLists_ReturnsOkResultWithCustomerList()
+        {
+            // Arrange
+            var expectedCustomerList = new List<CustomerViewModel>
+        {
+            new CustomerViewModel
+            {
+                customerId = 1,
+                customerName = "John Doe",
+                customerEmail = "johndoe@example.com",
+                customerPhone = "1234567890",
+                customerIsActive = true,
+                createDateTime = DateTime.Now,
+                updatedDateTime = null
+            },
+            new CustomerViewModel
+            {
+                customerId = 2,
+                customerName = "Jane Doe",
+                customerEmail = "janedoe@example.com",
+                customerPhone = "0987654321",
+                customerIsActive = true,
+                createDateTime = DateTime.Now,
+                updatedDateTime = null
+            }
+        };
+
+            A.CallTo(() => _customerService.GetAll()).Returns(expectedCustomerList);
+
+            var controller = new CustomerController(_customerService);
+
+            // Act
+            var result = controller.GetCustomerLists();
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var customerList = okResult.Value;
+            var data = (List<CustomerViewModel>)customerList.GetType().GetProperty("data").GetValue(customerList);
+
+            Assert.NotEmpty(data);
+        }
+        [Fact]
+        public void GetByID_ReturnsCustomer_WhenCustomerExists()
+        {
+            // Arrange
+            int id = 1;
+            var customer = new Customer
+            {
+                customerId = id,
+                customerName = "John Doe",
+                customerEmail = "johndoe@example.com",
+                customerPhone = "1234567890",
+                customerIsActive = true,
+                createDateTime = DateTime.Now,
+                updatedDateTime = null
+            };
+            A.CallTo(() => _customerService.GetById(id)).Returns(customer);
+
+            // Act
+            var result = _controller.GetByID(id);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(result);
+            var actualCustomer = okResult.Value as Customer;
+            Assert.Equal(customer.customerId, actualCustomer.customerId);
+            Assert.Equal(customer.customerName, actualCustomer.customerName);
+            Assert.Equal(customer.customerEmail, actualCustomer.customerEmail);
+            Assert.Equal(customer.customerPhone, actualCustomer.customerPhone);
+            Assert.Equal(customer.customerIsActive, actualCustomer.customerIsActive);
+            Assert.Equal(customer.createDateTime, actualCustomer.createDateTime);
+            Assert.Equal(customer.updatedDateTime, actualCustomer.updatedDateTime);
+        }
+
+        [Fact]
+        public void GetByID_ReturnsNotFound_WhenCustomerDoesNotExist()
+        {
+            // Arrange
+            int id = 0;
+            A.CallTo(() => _customerService.GetById(id)).Returns(null);
+
+            // Act
+            var result = _controller.GetByID(id);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+
+        [Fact]
+        public void Update_ReturnsOkResult_WithUpdatedCustomerAndSuccessMessage()
+        {
+            // Arrange
+            var updatedCustomer = new CustomerViewModel
+            {
+                customerId = 1,
+                customerName = "John Doe",
+                customerEmail = "johndoe@example.com",
+                customerPhone = "1234567890",
+                customerIsActive = true,
+                createDateTime = DateTime.Now,
+                updatedDateTime = null
+            };
+            A.CallTo(() => _customerService.Update(updatedCustomer)).Returns("Customer Updated Successfully");
+            var expectedResponse = new
+            {
+                message = "Customer Updated Successfully",
+                data = updatedCustomer
+            };
+
+            // Act
+            var result = _controller.Update(updatedCustomer);
+            var okResult = result as OkObjectResult;
+            dynamic actualResponse = okResult.Value;
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(expectedResponse.message, (string)actualResponse.GetType().GetProperty("message").GetValue(actualResponse, null));
+            Assert.Equal(updatedCustomer, actualResponse.GetType().GetProperty("data").GetValue(actualResponse, null));
+
+
+
+
+        }
+        //[Fact]
+        //public void Update_ReturnsNotFound_WhenCustomerDoesNotExist()
+        //{
+        //    // Arrange
+        //    int id = 1;
+        //    var updatedCustomer = new CustomerViewModel
+        //    {
+        //        customerId = id,
+        //        customerName = "John Doe",
+        //        customerEmail = "johndoe@example.com",
+        //        customerPhone = "1234567890",
+        //        customerIsActive = true,
+        //        createDateTime = DateTime.Now,
+        //        updatedDateTime = null
+        //    };
+        //    A.CallTo(() => _customerService.Update(updatedCustomer)).Returns(null);
+
+        //    // Act
+        //    var result = _controller.Update(updatedCustomer);
+
+        //    // Assert
+        //    var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+        //    Assert.Equal($"Customer with id {id} not found", notFoundResult.Value);
+        //}
+    }
+}
+

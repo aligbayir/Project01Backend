@@ -20,6 +20,7 @@ namespace Project01.Controllers
         {
             _customerService = customerService;
         }
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetCustomerLists()
         {
@@ -57,9 +58,14 @@ namespace Project01.Controllers
         }
         [HttpGet]
         [Route("{id}")]
-        public Customer GetByID(int id)
+        public IActionResult GetByID(int id)
         {
-            return _customerService.GetById(id);
+            var customer =_customerService.GetById(id);
+            if (customer != null)
+            {
+                return Ok(customer);
+            }
+            return NotFound();
         }
 
     }
