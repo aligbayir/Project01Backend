@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
 using BusinessLayer.Abstract;
 using BusinessLayer.AutoMappers.InvoiceViewModels;
-using BusinessLayer.Concrete.Validators.CustomerValidators;
-using BusinessLayer.Concrete.Validators.InvoiceValidators;
 using DataAccessLayer.Concrete;
 using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Project01.Controllers
 {
@@ -62,9 +58,14 @@ namespace Project01.Controllers
         }
         [HttpGet]
         [Route("{id}")]
-        public Invoice GetByID(int id)
+        public IActionResult GetByID(int id)
         {
-            return _invoiceService.GetById(id);
+            var invoice = _invoiceService.GetById(id);
+            if (invoice != null)
+            {
+                return Ok(invoice);
+            }
+            return NotFound();
         }
 
         [HttpGet]

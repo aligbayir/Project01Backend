@@ -1,11 +1,7 @@
 ﻿using BusinessLayer.Abstract;
 using BusinessLayer.AutoMappers.CustomerViewModels;
-using BusinessLayer.Concrete.Validators.CustomerValidators;
-using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace Project01.Controllers
 {
@@ -48,6 +44,11 @@ namespace Project01.Controllers
         [Route("{id}")]
         public IActionResult Update([FromBody] CustomerViewModel updatedCustomer)
         {
+            var customer = _customerService.GetById(updatedCustomer.customerId);
+            if (customer == null)
+            {
+                return NotFound();
+            }
             var upt = _customerService.Update(updatedCustomer);
             var res = new
             {

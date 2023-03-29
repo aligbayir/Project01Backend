@@ -168,34 +168,37 @@ namespace Project01.Tests.Controllers
             Assert.IsType<OkObjectResult>(result);
             Assert.Equal(expectedResponse.message, (string)actualResponse.GetType().GetProperty("message").GetValue(actualResponse, null));
             Assert.Equal(updatedCustomer, actualResponse.GetType().GetProperty("data").GetValue(actualResponse, null));
-
-
-
-
         }
         //[Fact]
         //public void Update_ReturnsNotFound_WhenCustomerDoesNotExist()
         //{
         //    // Arrange
-        //    int id = 1;
         //    var updatedCustomer = new CustomerViewModel
         //    {
-        //        customerId = id,
-        //        customerName = "John Doe",
-        //        customerEmail = "johndoe@example.com",
-        //        customerPhone = "1234567890",
+        //        customerId = 0,
+        //        customerName = "string",
+        //        customerEmail = "test@test.com",
+        //        customerPhone = "string",
         //        customerIsActive = true,
         //        createDateTime = DateTime.Now,
-        //        updatedDateTime = null
+        //        updatedDateTime = DateTime.Now
         //    };
-        //    A.CallTo(() => _customerService.Update(updatedCustomer)).Returns(null);
+        //    A.CallTo(() => _customerService.Update(updatedCustomer)).Returns("Customer Cannot found");
+        //    var expectedResponse = new
+        //    {
+        //        message = "Customer Cannot found",
+        //        data = updatedCustomer
+        //    };
 
         //    // Act
         //    var result = _controller.Update(updatedCustomer);
+        //    var okResult = result as OkObjectResult;
+        //    var actualResponse = okResult.Value;
 
         //    // Assert
-        //    var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-        //    Assert.Equal($"Customer with id {id} not found", notFoundResult.Value);
+        //    Assert.IsType<OkObjectResult>(result);
+        //    Assert.Equal(expectedResponse.message, (string)actualResponse.GetType().GetProperty("message").GetValue(actualResponse, null));
+        //    Assert.Equal(updatedCustomer, actualResponse.GetType().GetProperty("data").GetValue(actualResponse, null));
         //}
     }
 }
