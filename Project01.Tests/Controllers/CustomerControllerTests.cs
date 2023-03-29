@@ -88,6 +88,7 @@ namespace Project01.Tests.Controllers
             var data = (List<CustomerViewModel>)customerList.GetType().GetProperty("data").GetValue(customerList);
 
             Assert.NotEmpty(data);
+            Assert.Equal(expectedCustomerList, data);
         }
         [Fact]
         public void GetByID_ReturnsCustomer_WhenCustomerExists()
