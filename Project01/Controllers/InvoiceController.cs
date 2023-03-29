@@ -15,7 +15,7 @@ namespace Project01.Controllers
     {
         private readonly IInvoiceService _invoiceService;
 
-        
+
 
         public InvoiceController(IInvoiceService invoiceService)
         {
@@ -36,6 +36,9 @@ namespace Project01.Controllers
         [HttpPost]
         public IActionResult Add(InvoiceViewModel invoice)
         {
+            var customer = _invoiceService.GetById(invoice.CustomerId);
+            if (customer != null)
+            {
             var cst = _invoiceService.Add(invoice);
             var response = new
             {
@@ -43,6 +46,12 @@ namespace Project01.Controllers
                 message = cst
             };
             return Ok(response);
+               
+            }
+            return NotFound();
+
+
+
         }
         [HttpPut]
         [Route("{id}")]
@@ -106,7 +115,7 @@ namespace Project01.Controllers
                              invoiceAmount = t1.InvoiceAmount,
                              customerName = t2.customerName,
                          };
-            var selected = result.Where(x => x.invoiceId == id).Select(x => new { x.invoiceId,x.invoiceNumber,x.invoiceAmount,x.customerName,x.customerId}).ToList();
+            var selected = result.Where(x => x.invoiceId == id).Select(x => new { x.invoiceId, x.invoiceNumber, x.invoiceAmount, x.customerName, x.customerId }).ToList();
 
             //var result = dbcontext.Invoices.Include(x => x.Customer).Where(x => x.CustomerId == id).Select(x => x.Customer.customerName);
             return Ok(selected);
@@ -128,7 +137,7 @@ namespace Project01.Controllers
                              invoiceAmount = t1.InvoiceAmount,
                              customerName = t2.customerName,
                          };
-            var selected =result.Where(x => x.customerId == id);
+            var selected = result.Where(x => x.customerId == id);
 
             //var result = dbcontext.Invoices.Include(x => x.Customer).Where(x => x.CustomerId == id).Select(x => x.Customer.customerName);
             return Ok(selected.ToList());
