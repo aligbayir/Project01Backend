@@ -57,7 +57,24 @@ namespace Project01.Tests.Controllers
             var okResult = Assert.IsType<OkObjectResult>(result);
         }
 
+        [Fact]
+        public void Add_ReturnsBadResult()
+        {
+            // Arrange
+            var invoiceViewModel = new InvoiceViewModel
+            {
+                InvoiceId = 1,
+                InvoiceNumber = "0085",
+                InvoiceAmount = 175
+            };
+            A.CallTo(() => _invoiceService.Add(invoiceViewModel)).Returns("Fatura Başarıyla eklendi");
 
+            // Act
+            var result = _controller.Add(invoiceViewModel);
+
+            // Assert
+            var okResult =Assert.IsType<OkObjectResult>(result);
+        }
         [Fact]
         public void Add_ReturnsValidationErrorResult()
         {
